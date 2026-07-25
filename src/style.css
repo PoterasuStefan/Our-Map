@@ -1,0 +1,563 @@
+/* ============================================================
+   STYLE.CSS — versiune curata, fara duplicate
+   ============================================================ */
+
+body { margin: 0; }
+
+/* ===== Modal generic ===== */
+.modal-overlay {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.5);
+  display: flex; align-items: center; justify-content: center;
+  z-index: 4000;
+}
+.modal {
+  background: white; padding: 20px; border-radius: 10px;
+  width: 300px; display: flex; flex-direction: column; gap: 10px;
+}
+.modal input, .modal textarea {
+  padding: 8px; border: 1px solid #ccc; border-radius: 6px; font-size: 14px;
+}
+.modal-buttons { display: flex; justify-content: flex-end; gap: 8px; }
+.modal-buttons button { padding: 6px 12px; border-radius: 6px; border: none; cursor: pointer; }
+#pin-save { background: #4CAF50; color: white; }
+#pin-cancel { background: #eee; }
+
+/* ===== Leaflet popup (poza deasupra pinului) ===== */
+.leaflet-popup-content-wrapper {
+  background: transparent;
+  box-shadow: none;
+  padding: 0;
+  border-radius: 0;
+}
+.leaflet-popup-content { margin: 0; }
+.leaflet-popup-tip { display: none; }
+.leaflet-popup.photo-popup-empty .leaflet-popup-content-wrapper { display: none; }
+
+/* ===== Carousel poze ===== */
+.carousel {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+.carousel-img {
+  width: var(--carousel-img-size, 160px);
+  height: calc(var(--carousel-img-size, 160px) * 0.75);
+  object-fit: cover;
+  border-radius: 8px;
+  cursor: zoom-in;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.25);
+}
+.carousel-prev, .carousel-next {
+  border: none;
+  background: var(--pin-color, #f291b9);
+  color: white;
+  border-radius: 50%;
+  width: 24px; height: 24px;
+  cursor: pointer;
+  flex-shrink: 0;
+  font-size: 12px;
+  filter: brightness(1);
+}
+.carousel-prev:hover, .carousel-next:hover { filter: brightness(0.85); }
+
+/* ===== Tooltip fereastra roz (sub pin) ===== */
+.leaflet-tooltip.pin-desc-tooltip {
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  padding: 0;
+  opacity: 1 !important;
+}
+.leaflet-tooltip.pin-desc-tooltip::before { display: none; }
+
+/* ===== Popup fereastra roz ===== */
+.pin-popup-window {
+  width: 260px;
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.25);
+  border: 2px solid var(--pin-color, #f291b9);
+  font-family: system-ui, sans-serif;
+}
+.pin-popup-header {
+  background: linear-gradient(180deg,
+    color-mix(in srgb, var(--pin-color, #f291b9) 55%, white),
+    var(--pin-color, #f291b9));
+  padding: 6px 8px;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 6px;
+}
+.pin-popup-header .gear,
+.pin-popup-header .btn-close {
+  width: 18px; height: 18px;
+  border: 1px solid #c9628f;
+  border-radius: 4px;
+  background: #fce8ef;
+  font-size: 12px;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer;
+  color: #a84f74;
+}
+.pin-popup-body {
+  background: #fdf1e7;
+  padding: 12px;
+}
+.pin-popup-body h4 {
+  margin: 0 0 8px;
+  font-size: 17px; font-weight: 800; color: #333;
+}
+.pin-popup-desc {
+  max-height: 180px;
+  overflow-y: auto;
+  font-size: 13px; line-height: 1.4; color: #444;
+  padding-right: 4px;
+}
+
+/* ===== Lightbox ===== */
+.lightbox-overlay {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.85);
+  display: flex; align-items: center; justify-content: center;
+  z-index: 6000;
+  cursor: zoom-out;
+}
+.lightbox-overlay img {
+  max-width: 90vw; max-height: 90vh;
+  border-radius: 8px;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+}
+
+/* ===== Settings overlay comun ===== */
+.settings-overlay {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.6);
+  display: flex; align-items: center; justify-content: center;
+  z-index: 3000;
+}
+.settings-modal {
+  width: 90vw; max-width: 500px; height: 85vh;
+  background: #fdf1e7;
+  border-radius: 16px;
+  overflow: hidden;
+  display: flex; flex-direction: column;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+}
+.settings-header {
+  padding: 10px 14px;
+  display: flex; justify-content: space-between; align-items: center;
+  transition: background 0.3s;
+  flex-shrink: 0;
+}
+.settings-close {
+  width: 22px; height: 22px; border-radius: 5px;
+  background: #fce8ef; border: 1px solid #c9628f;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; color: #a84f74; font-size: 16px;
+  flex-shrink: 0;
+}
+
+/* ===== Settings body — PIN (coloana pin stanga + campuri dreapta) ===== */
+.pin-settings-body {
+  display: flex;
+  flex-direction: row;
+  gap: 16px;
+  padding: 16px;
+  overflow-y: auto;
+  flex-grow: 1;
+  align-items: flex-start;
+}
+.settings-pin-col {
+  display: flex; flex-direction: column; align-items: center;
+  gap: 8px; flex-shrink: 0; width: 80px;
+}
+.settings-pin-preview {
+  display: flex; align-items: center; justify-content: center;
+}
+.settings-color-edit-btn {
+  padding: 5px 8px; border-radius: 8px;
+  border: 1px solid #d9799f;
+  background: rgba(255,255,255,0.7);
+  font-size: 11px; cursor: pointer; white-space: nowrap;
+}
+.settings-fields {
+  flex: 1; display: flex; flex-direction: column; gap: 6px; min-width: 0;
+}
+.settings-fields label {
+  font-size: 12px; font-weight: 700; color: #8a5a70; margin-top: 8px;
+}
+.settings-fields input,
+.settings-fields textarea {
+  padding: 8px; border: 1px solid #d9799f; border-radius: 8px;
+  font-size: 14px; width: 100%; box-sizing: border-box; resize: vertical;
+}
+.settings-fields textarea { min-height: 130px; }
+
+/* ===== Settings body — APP SETTINGS (vertical simplu) ===== */
+.settings-body {
+  display: flex; flex-direction: column;
+  gap: 6px; padding: 16px;
+  overflow-y: auto; flex-grow: 1;
+}
+.settings-body label {
+  font-size: 12px; font-weight: 700; color: #8a5a70; margin-top: 10px;
+}
+.settings-body input[type="text"],
+.settings-body input:not([type]),
+.settings-body textarea {
+  padding: 8px; border: 1px solid #d9799f; border-radius: 8px; font-size: 14px;
+}
+
+/* footer cu sterge + anuleaza/salveaza */
+.settings-footer {
+  padding: 10px 14px;
+  display: flex; align-items: center; justify-content: space-between;
+  border-top: 1px solid #f0d8e6;
+  background: #fdf1e7; flex-shrink: 0;
+}
+.settings-footer .settings-buttons { display: flex; gap: 8px; margin: 0; padding: 0; }
+.settings-buttons button { padding: 8px 16px; border-radius: 8px; border: none; cursor: pointer; }
+#settings-save { background: #4CAF50; color: white; }
+#settings-cancel { background: #eee; }
+
+.delete-pin-btn {
+  padding: 8px 12px; border-radius: 8px;
+  border: 1px solid #e05770; background: none; color: #e05770;
+  cursor: pointer; font-size: 13px;
+}
+.delete-pin-btn:hover { background: #fdeaec; }
+
+#settings-group {
+  margin-top: 4px; padding: 8px; border-radius: 8px;
+  border: 1px dashed #c9628f; background: none; color: #a84f74;
+  cursor: pointer; font-size: 13px;
+}
+#settings-group:hover { background: #fff6fa; }
+
+.settings-photos-grid { display: flex; flex-wrap: wrap; gap: 8px; }
+.settings-photo { position: relative; width: 70px; height: 70px; }
+.settings-photo img { width: 100%; height: 100%; object-fit: cover; border-radius: 6px; }
+.remove-photo {
+  position: absolute; top: -6px; right: -6px;
+  background: #e05770; color: white;
+  width: 18px; height: 18px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px; cursor: pointer;
+}
+
+/* ===== File upload button ===== */
+.file-upload-row { display: flex; align-items: center; gap: 8px; }
+.file-upload-btn {
+  display: inline-block;
+  padding: 8px 14px;
+  background: #f291b9; color: white;
+  border-radius: 8px; cursor: pointer;
+  font-size: 13px; text-align: center; width: fit-content;
+}
+.file-upload-btn:hover { background: #e07aa5; }
+.file-upload-count { font-size: 12px; color: #8a5a70; }
+
+/* ===== Grupuri (modal pin → grup) ===== */
+.group-modal-title { font-weight: 700; color: #7a3f58; padding-left: 4px; }
+.group-list {
+  display: flex; flex-direction: column; gap: 8px;
+  max-height: 220px; overflow-y: auto;
+}
+.group-row {
+  display: flex; align-items: center; gap: 8px;
+  padding: 8px;
+  border: 1px solid #eccdd9; border-radius: 8px;
+  cursor: pointer; font-size: 14px;
+}
+.group-row:hover { background: #fff6fa; }
+.group-swatch {
+  width: 16px; height: 16px;
+  border-radius: 50%; flex-shrink: 0;
+}
+.group-empty { font-size: 13px; color: #999; }
+.use-group-settings-row {
+  display: flex; align-items: center; gap: 8px;
+  font-size: 13px; margin-top: 10px; color: #7a3f58;
+}
+.new-group-btn {
+  margin-top: 12px; padding: 8px;
+  border-radius: 8px;
+  border: 1px dashed #c9628f;
+  background: none; color: #a84f74;
+  cursor: pointer; width: 100%;
+}
+.new-group-form {
+  margin-top: 10px; padding: 10px;
+  background: #fff6fa; border-radius: 8px;
+  display: flex; flex-direction: column; gap: 8px;
+}
+.new-group-form input {
+  padding: 6px;
+  border: 1px solid #d9799f; border-radius: 6px;
+}
+
+/* ===== Custom pin icon ===== */
+.custom-pin-icon { background: none; border: none; }
+
+/* ===== Menu button + Sidepanel (vine din DREAPTA) ===== */
+.menu-btn {
+  position: fixed; top: 12px; right: 12px;
+  z-index: 1500;
+  width: 40px; height: 40px;
+  border-radius: 8px; border: none;
+  background: white;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.25);
+  font-size: 18px; cursor: pointer;
+}
+.sidepanel-backdrop {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.4);
+  z-index: 1600;
+  opacity: 0; pointer-events: none;
+  transition: opacity 0.25s;
+}
+.sidepanel-backdrop.open { opacity: 1; pointer-events: auto; }
+.sidepanel {
+  position: fixed; top: 0; right: 0;
+  height: 100%; width: 300px; max-width: 85vw;
+  background: #fdf1e7;
+  z-index: 1700;
+  transform: translateX(100%);
+  transition: transform 0.25s;
+  display: flex; flex-direction: column;
+  box-shadow: -4px 0 20px rgba(0,0,0,0.25);
+}
+.sidepanel.open { transform: translateX(0); }
+.sidepanel-header {
+  background: linear-gradient(180deg, #f9c3d9, #f291b9);
+  padding: 16px;
+}
+.sidepanel-header h3 { margin: 0; color: #5b2c42; }
+.sidepanel-user { font-size: 12px; color: #7a3f58; }
+.sidepanel-body {
+  padding: 16px; overflow-y: auto; flex-grow: 1;
+  display: flex; flex-direction: column; gap: 10px;
+}
+.sidepanel-primary-btn {
+  padding: 10px; border-radius: 8px; border: none;
+  background: #f291b9; color: white; cursor: pointer; font-size: 14px;
+}
+.sidepanel-secondary-btn {
+  padding: 10px; border-radius: 8px;
+  border: 1px dashed #c9628f;
+  background: none; color: #a84f74; cursor: pointer;
+}
+.sidepanel-logout-btn {
+  margin-top: auto; padding: 10px;
+  border-radius: 8px; border: none;
+  background: #eee; cursor: pointer;
+}
+.sidepanel-hint { color: #999; font-size: 13px; text-align: center; }
+.group-role { margin-left: auto; font-size: 11px; color: #a84f74; text-transform: uppercase; }
+.group-share-icon { margin-left: 4px; cursor: pointer; font-size: 14px; flex-shrink: 0; }
+
+/* ===== Auth ===== */
+.auth-status { font-size: 12px; color: #c0392b; min-height: 14px; }
+
+/* ===== Share modal (stil Google Docs) ===== */
+.share-owner-row {
+  display: flex; align-items: center; gap: 10px;
+  padding: 8px 0; font-size: 14px;
+}
+.share-avatar {
+  width: 32px; height: 32px; border-radius: 50%;
+  background: #f291b9; color: white;
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 700; flex-shrink: 0;
+}
+.share-role-label { margin-left: auto; font-size: 12px; color: #999; }
+.share-modal h4 { font-size: 13px; color: #7a3f58; margin: 14px 0 6px; }
+.share-general-row {
+  display: flex; align-items: center; gap: 10px;
+  background: #fff6fa; padding: 10px; border-radius: 8px;
+}
+.share-link-icon { font-size: 18px; }
+.share-general-text { flex-grow: 1; font-size: 13px; }
+.share-general-desc { color: #999; font-size: 12px; }
+#share-role-select {
+  padding: 4px 6px; border-radius: 6px; border: 1px solid #d9799f;
+}
+
+/* ===== Map hints & toasts ===== */
+.map-login-hint {
+  position: fixed; inset: 0;
+  display: flex; align-items: center; justify-content: center;
+  pointer-events: none; z-index: 500;
+}
+.map-hint-box {
+  background: white; border-radius: 12px;
+  padding: 20px 28px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+  text-align: center; font-size: 14px; color: #666;
+  display: flex; flex-direction: column; align-items: center; gap: 8px;
+}
+.map-hint-box span { font-size: 32px; }
+.map-toast {
+  position: fixed; bottom: 24px; left: 50%;
+  transform: translateX(-50%);
+  background: #333; color: white;
+  padding: 10px 20px; border-radius: 20px;
+  font-size: 13px; z-index: 5000;
+  pointer-events: none;
+  animation: fadeInUp 0.2s ease;
+}
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateX(-50%) translateY(8px); }
+  to   { opacity: 1; transform: translateX(-50%) translateY(0); }
+}
+
+/* ===== Quick Add button ===== */
+.quickadd-btn {
+  position: fixed; bottom: 24px; left: 24px;
+  z-index: 1500;
+  width: 56px; height: 56px; border-radius: 50%; border: none;
+  background: linear-gradient(135deg, #f9c3d9, #f291b9);
+  color: white; font-size: 30px; line-height: 1;
+  cursor: pointer;
+  box-shadow: 0 4px 16px rgba(242,145,185,0.55);
+  display: flex; align-items: center; justify-content: center;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.quickadd-btn:hover { transform: scale(1.07); box-shadow: 0 6px 22px rgba(242,145,185,0.65); }
+.quickadd-btn:active { transform: scale(0.94); }
+
+/* ===== Quick Add modal ===== */
+.quickadd-modal { max-width: 340px; }
+.quickadd-header {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 4px;
+}
+.quickadd-header h3 { margin: 0; font-size: 16px; }
+.quickadd-help-wrap { position: relative; }
+.quickadd-help-btn {
+  width: 22px; height: 22px; border-radius: 50%;
+  background: #ede8f5; color: #7a5f94;
+  font-size: 12px; font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+  cursor: help; user-select: none;
+}
+.quickadd-help-tooltip {
+  display: none;
+  position: absolute; right: 0; top: 30px;
+  width: 280px;
+  background: #1e1b2e; color: #ede8f5;
+  font-size: 12px; line-height: 1.6;
+  padding: 14px 16px; border-radius: 12px;
+  box-shadow: 0 8px 28px rgba(0,0,0,0.4);
+  z-index: 9000;
+}
+.quickadd-help-wrap:hover .quickadd-help-tooltip { display: block; }
+.exif-link {
+  color: #c084fc; text-decoration: underline;
+  font-size: 11px; display: inline-block; margin-top: 6px;
+}
+.quickadd-upload-area { display: flex; flex-direction: column; gap: 6px; margin: 8px 0; }
+.quickadd-upload-btn { width: 100%; box-sizing: border-box; text-align: center; }
+.quickadd-options {
+  background: #fff6fa; border-radius: 10px; padding: 12px;
+  display: flex; flex-direction: column; gap: 10px; margin-bottom: 4px;
+}
+.quickadd-merge-label { display: flex; align-items: center; gap: 8px; font-size: 14px; cursor: pointer; }
+.quickadd-slider-row { display: flex; align-items: center; gap: 8px; transition: opacity 0.2s; }
+.quickadd-slider { flex: 1; accent-color: #f291b9; }
+.slider-label { font-size: 12px; color: #888; white-space: nowrap; }
+.quickadd-submit-btn { background: #4CAF50; color: white; }
+
+/* ===== Review panel ===== */
+.review-panel {
+  position: fixed; bottom: 0; left: 0; right: 0;
+  background: white;
+  border-top-left-radius: 20px; border-top-right-radius: 20px;
+  box-shadow: 0 -4px 24px rgba(0,0,0,0.18);
+  z-index: 5000;
+  padding: 18px 18px 24px;
+  display: flex; flex-direction: column; gap: 14px;
+  transform: translateY(100%);
+  transition: transform 0.32s cubic-bezier(0.4,0,0.2,1);
+}
+.review-panel-visible { transform: translateY(0); }
+.review-top { display: flex; flex-direction: column; gap: 10px; }
+.review-meta { display: flex; align-items: center; gap: 8px; font-size: 13px; }
+.review-counter { font-weight: 700; color: #444; }
+.review-badge { padding: 2px 8px; border-radius: 20px; font-size: 11px; font-weight: 700; }
+.gps-ok  { background: #d4f4dd; color: #2e7d32; }
+.gps-no  { background: #fdecea; color: #c62828; }
+.review-photocount { margin-left: auto; color: #888; font-size: 12px; }
+.review-thumbs { display: flex; gap: 6px; overflow-x: auto; scrollbar-width: none; }
+.review-thumbs::-webkit-scrollbar { display: none; }
+.review-thumb {
+  width: 72px; height: 72px; object-fit: cover;
+  border-radius: 8px; flex-shrink: 0;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+}
+.review-more {
+  width: 72px; height: 72px;
+  background: #f0edf5; border-radius: 8px; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px; font-weight: 700; color: #888;
+}
+.review-question { font-size: 15px; font-weight: 600; color: #333; margin: 0; }
+.review-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+.review-btn {
+  padding: 10px 14px; border-radius: 10px; border: none;
+  font-size: 13px; font-weight: 600; cursor: pointer; flex: 1 1 auto;
+}
+.r-yes  { background: #4CAF50; color: white; }
+.r-move { background: #f291b9; color: white; }
+.r-no   { background: #fdecea; color: #c62828; border: 1px solid #f5c6c6; }
+.r-skip { background: #f0edf5; color: #666; }
+
+/* ===== Cursor crosshair pentru plasare pin ===== */
+body.cursor-pin,
+body.cursor-pin * { cursor: crosshair !important; }
+.cursor-pin-toast { background: #1e1b2e !important; font-size: 13px; padding: 12px 22px; }
+
+/* ===== Temp marker animat ===== */
+.temp-pin-wrapper { background: none !important; border: none !important; }
+.temp-pin-pulse {
+  font-size: 28px;
+  animation: pin-bounce 0.8s ease-in-out infinite alternate;
+  display: block;
+}
+@keyframes pin-bounce {
+  from { transform: translateY(0); }
+  to   { transform: translateY(-6px); }
+}
+
+/* ===== App Settings (din sidepanel) ===== */
+.app-settings-size-row { display: flex; gap: 8px; margin-top: 6px; }
+.size-opt {
+  flex: 1; padding: 10px 6px; border-radius: 10px;
+  border: 2px solid #eccdd9; background: white;
+  cursor: pointer; font-size: 12px; text-align: center;
+  line-height: 1.4; transition: border-color 0.2s;
+}
+.size-opt span { font-size: 10px; color: #aaa; }
+.size-opt-active {
+  border-color: #f291b9; background: #fff0f7;
+  font-weight: 700; color: #a84f74;
+}
+.app-settings-group-row {
+  display: flex; align-items: center; gap: 8px; padding: 8px;
+  border: 1px solid #eccdd9; border-radius: 8px;
+  font-size: 13px; margin-bottom: 6px;
+}
+.app-settings-group-actions { margin-left: auto; display: flex; gap: 4px; }
+.app-settings-group-actions button {
+  padding: 4px 8px; border-radius: 6px; border: none;
+  cursor: pointer; font-size: 12px; background: #f5edf2;
+}
+.app-settings-group-actions button:hover { background: #f0d8e6; }
+.delete-account-btn {
+  padding: 8px 14px; border-radius: 8px;
+  border: 1px solid #ddd; background: none;
+  color: #bbb; cursor: not-allowed; font-size: 13px;
+}
