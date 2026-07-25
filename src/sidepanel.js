@@ -1,10 +1,13 @@
 import { auth } from './firebase.js';
 import { onAuthStateChanged, signOut } from 'firebase/auth';
 import { fetchMyGroups, joinGroupByCode } from './groups.js';
-import { filterMarkersByGroups } from './map.js';
 import { openLoginModal } from './auth-ui.js';
 import { collection, query, where, getDocs, doc, updateDoc, deleteDoc } from 'firebase/firestore';
 import { db } from './firebase.js';
+
+// Un singur import curat din map.js
+import { filterMarkersByGroups, loadPins } from './map.js';
+
 let map = null;
 let selectedGroupIds = null;
 
@@ -59,6 +62,7 @@ function checkJoinCodeFromUrl() {
       const { group, role } = await joinGroupByCode(code);
       alert(`Te-ai alaturat grupului "${group.name}" ca ${role === 'editor' ? 'editor' : 'vizitator'}.`);
       selectedGroupIds = null;
+      await loadPins(map); // <-- Adaugă această linie pentru a trage pinurile noi
     } catch (e) {
       alert(e.message);
     }
@@ -207,13 +211,18 @@ function openShareModal(group) {
   });
 
   overlay.querySelector('#share-copy').addEventListener('click', async () => {
+    // Extragem rolul selectat și codul corect aferent grupului
+    const role = overlay.querySelector('#share-role-select').value;
+    const code = role === 'edit' ? group.editCode : group.viewCode;
+    
     const btn = overlay.querySelector('#share-copy');
     try {
-      await navigator.clipboard.writeText(currentLink());
+      // Copiem DOAR codul, în loc de currentLink()
+      await navigator.clipboard.writeText(code); 
       btn.textContent = 'Copiat!';
       setTimeout(() => { btn.textContent = 'Copiaza linkul'; }, 1500);
     } catch (e) {
-      alert('Linkul: ' + currentLink());
+      alert('Eroare la copierea codului.');
     }
   });
 
@@ -246,6 +255,7 @@ function openImportGroupModal(panel) {
       alert(`Te-ai alaturat grupului "${group.name}" ca ${role === 'editor' ? 'editor' : 'vizitator'}.`);
       overlay.remove();
       selectedGroupIds = null;
+      await loadPins(map); // <-- Adaugă această linie pentru a trage pinurile noi
       renderPanel(panel);
     } catch (e) {
       alert(e.message);

@@ -253,11 +253,11 @@ export async function loadPins(map) {
   const uid = auth.currentUser?.uid;
   if (!uid) return;
 
+  const myPinIds = new Set();
+
   // 1. pinurile proprii
   const myPinsQ = query(collection(db, 'pins'), where('ownerUid', '==', uid));
   const mySnap = await getDocs(myPinsQ);
-  const myPinIds = new Set();
-
   mySnap.forEach((d) => {
     myPinIds.add(d.id);
     addMarker(map, { id: d.id, groupIds: [], ...d.data() });
@@ -268,7 +268,6 @@ export async function loadPins(map) {
   const myGroupIds = myGroups.map(g => g.id);
 
   if (myGroupIds.length > 0) {
-    // Firestore permite max 30 de valori in array-contains-any
     const chunks = chunkArray(myGroupIds, 30);
     for (const chunk of chunks) {
       const groupPinsQ = query(
@@ -277,7 +276,7 @@ export async function loadPins(map) {
       );
       const groupSnap = await getDocs(groupPinsQ);
       groupSnap.forEach((d) => {
-        if (!myPinIds.has(d.id)) { // evitam duplicate (pinurile proprii care sunt si in grup)
+        if (!myPinIds.has(d.id)) {
           myPinIds.add(d.id);
           addMarker(map, { id: d.id, groupIds: [], ...d.data() });
         }
@@ -286,8 +285,7 @@ export async function loadPins(map) {
   }
 }
 
-export async function createPinFromData(map, lat, lng, files, description) {
-  const uid = auth.currentUser?.uid;
+export async function createPinFromData(map, lat, lng, files, title, description) {  const uid = auth.currentUser?.uid;
   if (!uid) throw new Error('Trebuie să fii logat.');
 
   const photoUrls = await uploadPhotos(files);
@@ -295,8 +293,8 @@ export async function createPinFromData(map, lat, lng, files, description) {
   const docRef = await addDoc(collection(db, 'pins'), {
     ownerUid: uid,
     lat, lng,
-    title: 'Loc vizitat',
-    description,
+    title: title || 'Loc vizitat',
+    description: description || '',
     photoUrls,
     color: DEFAULT_PIN_COLOR,
     groupIds: [],

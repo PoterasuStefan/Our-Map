@@ -389,7 +389,7 @@ async function skipAll() {
     const g = reviewGroups[i];
     if (g.hasGps) {
       try {
-        await createPinFromData(mapInstance, g.centerLat, g.centerLng, g.photos.map(p => p.file), '');
+        await createPinFromData(mapInstance, g.centerLat, g.centerLng, g.photos.map(p => p.file), 'Loc vizitat', '');
         done++;
         const el = overlay.querySelector('#skip-prog');
         if (el) el.textContent = `${done} / ${gpsGroups.length}`;
