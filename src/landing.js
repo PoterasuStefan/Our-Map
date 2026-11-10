@@ -101,8 +101,8 @@ export function initLandingPage({ onOpenMap, onLogin }) {
                 <span>GPS extras automat din poză</span>
               </div>
 
-              <!-- Pin plutitor stilizat -->
-              <div class="mockup-floating-pin">
+              <!-- Pin 1 plutitor stilizat (Plaja Navagio) -->
+              <div class="mockup-floating-pin mockup-pin-navagio">
                 <div class="mockup-pin-popup">
                   <div class="mockup-pin-header">
                     <span>📍 Plaja Navagio</span>
@@ -115,6 +115,26 @@ export function initLandingPage({ onOpenMap, onLogin }) {
                       class="mockup-pin-img" 
                     />
                     <div>Cea mai frumoasă apă pe care am văzut-o vreodată! ❤️</div>
+                  </div>
+                </div>
+
+                <img src="${logoUrl}" alt="Pin Marker" class="mockup-pin-icon" />
+              </div>
+
+              <!-- Pin 2 plutitor stilizat (Blue Caves / Keri) -->
+              <div class="mockup-floating-pin mockup-pin-caves">
+                <div class="mockup-pin-popup">
+                  <div class="mockup-pin-header">
+                    <span>📍 Blue Caves & Keri</span>
+                    <span>★ Amintire</span>
+                  </div>
+                  <div class="mockup-pin-body">
+                    <img 
+                      src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=400&q=80" 
+                      alt="Blue Caves & Keri" 
+                      class="mockup-pin-img" 
+                    />
+                    <div>Apus magnific și ape turcoaz cristaline! 🌅</div>
                   </div>
                 </div>
 
