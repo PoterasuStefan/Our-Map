@@ -6,6 +6,7 @@ import {
 } from 'firebase/firestore';
 import { onAuthStateChanged } from 'firebase/auth';
 import { fetchGroups, createGroup, fetchMyGroups } from './groups.js';
+import { escapeHTML, sanitizeUrl, validateImageFile } from './security.js';
 
 const CLOUD_NAME = 'xstotnnf';
 const UPLOAD_PRESET = 'Upload Photos Unsigned';
@@ -227,10 +228,15 @@ function openNewPinForm(map, latlng) {
 }
 
 // ---------- Upload poze ----------
-
+ 
 async function uploadPhotos(fileList) {
   const urls = [];
   for (const file of fileList) {
+    const validation = validateImageFile(file, 10);
+    if (!validation.valid) {
+      throw new Error(validation.error);
+    }
+
     const formData = new FormData();
     formData.append('file', file);
     formData.append('upload_preset', UPLOAD_PRESET);
@@ -240,9 +246,14 @@ async function uploadPhotos(fileList) {
       body: formData
     });
 
-    if (!response.ok) throw new Error('Upload esuat: ' + await response.text());
+    if (!response.ok) {
+      throw new Error('Uploadul imaginii a eșuat. Verifică formatul și conexiunea la internet.');
+    }
     const data = await response.json();
-    urls.push(data.secure_url);
+    const safeUrl = sanitizeUrl(data.secure_url);
+    if (safeUrl) {
+      urls.push(safeUrl);
+    }
   }
   return urls;
 }
@@ -378,10 +389,12 @@ function buildCarouselContent(pin) {
   container.style.setProperty('--pin-color', pin.color || DEFAULT_PIN_COLOR);
   let currentIndex = 0;
 
+  const firstPhoto = sanitizeUrl(pin.photoUrls[0]);
+
   container.innerHTML = `
     <div class="carousel">
       <button class="carousel-prev">&#8592;</button>
-      <img class="carousel-img" src="${pin.photoUrls[0]}" />
+      <img class="carousel-img" src="${firstPhoto}" alt="Foto pin" />
       <button class="carousel-next">&#8594;</button>
     </div>
   `;
@@ -390,11 +403,11 @@ function buildCarouselContent(pin) {
   img.addEventListener('click', () => openLightbox(pin.photoUrls[currentIndex]));
   container.querySelector('.carousel-prev').addEventListener('click', () => {
     currentIndex = (currentIndex - 1 + pin.photoUrls.length) % pin.photoUrls.length;
-    img.src = pin.photoUrls[currentIndex];
+    img.src = sanitizeUrl(pin.photoUrls[currentIndex]);
   });
   container.querySelector('.carousel-next').addEventListener('click', () => {
     currentIndex = (currentIndex + 1) % pin.photoUrls.length;
-    img.src = pin.photoUrls[currentIndex];
+    img.src = sanitizeUrl(pin.photoUrls[currentIndex]);
   });
 
   return container;
@@ -413,8 +426,8 @@ function buildWindowContent(pin, map) {
       <span class="btn-close">&times;</span>
     </div>
     <div class="pin-popup-body">
-      <h4>${pin.title || 'Fara titlu'}</h4>
-      <div class="pin-popup-desc">${pin.description || ''}</div>
+      <h4>${escapeHTML(pin.title || 'Fără titlu')}</h4>
+      <div class="pin-popup-desc">${escapeHTML(pin.description || '')}</div>
     </div>
   `;
 
@@ -428,9 +441,12 @@ function buildWindowContent(pin, map) {
 }
 
 function openLightbox(url) {
+  const safeUrl = sanitizeUrl(url);
+  if (!safeUrl) return;
+
   const overlay = document.createElement('div');
   overlay.className = 'lightbox-overlay';
-  overlay.innerHTML = `<img src="${url}" />`;
+  overlay.innerHTML = `<img src="${safeUrl}" alt="Imagine mărită" />`;
   overlay.addEventListener('click', () => overlay.remove());
   document.body.appendChild(overlay);
 }
@@ -442,12 +458,15 @@ function openSettingsModal(map, pin) {
   overlay.className = 'settings-overlay';
   const currentColor = pin.color || DEFAULT_PIN_COLOR;
 
-  const photosHtml = (pin.photoUrls || []).map((url, i) => `
-    <div class="settings-photo" data-index="${i}">
-      <img src="${url}" />
-      <span class="remove-photo" data-index="${i}">&times;</span>
-    </div>
-  `).join('');
+  const photosHtml = (pin.photoUrls || []).map((url, i) => {
+    const safeUrl = sanitizeUrl(url);
+    return `
+      <div class="settings-photo" data-index="${i}">
+        <img src="${safeUrl}" alt="Poză locație" />
+        <span class="remove-photo" data-index="${i}">&times;</span>
+      </div>
+    `;
+  }).join('');
 
   overlay.innerHTML = `
     <!-- Am schimbat align-items la 'center' pentru a centra ferestrele vertical una față de cealaltă -->
@@ -477,10 +496,10 @@ function openSettingsModal(map, pin) {
         <div class="settings-body" style="flex-grow: 1;">
           <div class="settings-fields">
             <label>Titlu</label>
-            <input id="settings-title" value="${(pin.title || '').replace(/"/g, '&quot;')}" />
+            <input id="settings-title" value="${escapeHTML(pin.title || '')}" />
             
             <label>Descriere</label>
-            <textarea id="settings-desc" rows="6">${pin.description || ''}</textarea>
+            <textarea id="settings-desc" rows="6">${escapeHTML(pin.description || '')}</textarea>
             
             <label>Poze</label>
             <div class="settings-photos-grid">${photosHtml}</div>
@@ -619,10 +638,10 @@ function renderGroupList(map, pin, groups, overlay) {
 
   const rowsHtml = groups.map(g => `
     <label class="group-row">
-      <input type="checkbox" class="group-checkbox" data-id="${g.id}"
+      <input type="checkbox" class="group-checkbox" data-id="${escapeHTML(g.id)}"
         ${pin.groupIds && pin.groupIds.includes(g.id) ? 'checked' : ''} />
-      <span class="group-swatch" style="background:${g.color}"></span>
-      <span>${g.name}</span>
+      <span class="group-swatch" style="background:${escapeHTML(g.color)}"></span>
+      <span>${escapeHTML(g.name)}</span>
     </label>
   `).join('');
 

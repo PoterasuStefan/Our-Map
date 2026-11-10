@@ -1,6 +1,7 @@
 import L from 'leaflet';
 import exifr from 'exifr';
 import { createPinFromData, setMapClickOverride } from './map.js';
+import { validateImageFile } from './security.js';
 
 let mapInstance = null;
 
@@ -99,6 +100,16 @@ function openQuickAddModal() {
       countEl.textContent = 'Selectează cel puțin o poză.';
       countEl.style.color = '#e05770';
       return;
+    }
+
+    // Validare securitate fișiere (format și mărime)
+    for (const file of files) {
+      const check = validateImageFile(file, 10);
+      if (!check.valid) {
+        countEl.textContent = check.error;
+        countEl.style.color = '#e05770';
+        return;
+      }
     }
 
     const merge  = mergeCheck.checked;

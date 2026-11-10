@@ -5,8 +5,8 @@ import { openLoginModal } from './auth-ui.js';
 import { collection, query, where, getDocs, doc, updateDoc, deleteDoc } from 'firebase/firestore';
 import { db } from './firebase.js';
 
-// Un singur import curat din map.js
 import { filterMarkersByGroups, loadPins } from './map.js';
+import { escapeHTML } from './security.js';
 
 let map = null;
 let selectedGroupIds = null;
@@ -91,26 +91,37 @@ async function renderPanel(panel) {
       <div class="sidepanel-header"><h3>Meniu</h3></div>
       <div class="sidepanel-body">
         <button id="login-btn" class="sidepanel-primary-btn">Login</button>
+        <button id="landing-home-btn" class="sidepanel-secondary-btn" style="margin-top: 8px;">🏠 Pagina Principală</button>
         <p class="sidepanel-hint">Log in to start creating and sharing maps with your friends</p>
       </div>
     `;
     panel.querySelector('#login-btn').addEventListener('click', () => openLoginModal());
+    panel.querySelector('#landing-home-btn').addEventListener('click', () => {
+      panel.classList.remove('open');
+      window.dispatchEvent(new CustomEvent('navigate-landing'));
+    });
     return;
   }
 
   panel.innerHTML = `
     <div class="sidepanel-header">
       <h3>Meniu</h3>
-      <span class="sidepanel-user">${user.email}</span>
+      <span class="sidepanel-user">${escapeHTML(user.email)}</span>
     </div>
     <div class="sidepanel-body">
       <h4>Filtreaza dupa grup</h4>
       <div id="sidepanel-groups"><p>Se incarca...</p></div>
       <button id="import-group-btn" class="sidepanel-secondary-btn">Importa un grup</button>
       <button id="settings-panel-btn" class="sidepanel-secondary-btn">⚙️ Setări</button>
+      <button id="landing-home-btn" class="sidepanel-secondary-btn">🏠 Pagina Principală</button>
       <button id="logout-btn" class="sidepanel-logout-btn">Log out</button>
     </div>
   `;
+
+  panel.querySelector('#landing-home-btn').addEventListener('click', () => {
+    panel.classList.remove('open');
+    window.dispatchEvent(new CustomEvent('navigate-landing'));
+  });
 
   panel.querySelector('#logout-btn').addEventListener('click', async () => {
     await signOut(auth);
@@ -137,11 +148,11 @@ function renderGroupFilters(panel, groups) {
 
   container.innerHTML = groups.map(g => `
     <label class="group-row">
-      <input type="checkbox" class="sidepanel-group-checkbox" data-id="${g.id}" ${selectedGroupIds.has(g.id) ? 'checked' : ''} />
-      <span class="group-swatch" style="background:${g.color}"></span>
-      <span>${g.name}</span>
-      ${g.role === 'owner' ? `<span class="group-share-icon" data-id="${g.id}" title="Share">&#128279;</span>` : ''}
-      <span class="group-role">${g.role}</span>
+      <input type="checkbox" class="sidepanel-group-checkbox" data-id="${escapeHTML(g.id)}" ${selectedGroupIds.has(g.id) ? 'checked' : ''} />
+      <span class="group-swatch" style="background:${escapeHTML(g.color)}"></span>
+      <span>${escapeHTML(g.name)}</span>
+      ${g.role === 'owner' ? `<span class="group-share-icon" data-id="${escapeHTML(g.id)}" title="Share">&#128279;</span>` : ''}
+      <span class="group-role">${escapeHTML(g.role)}</span>
     </label>
   `).join('');
 
@@ -175,8 +186,8 @@ function openShareModal(group) {
     <div class="modal share-modal">
       <h3>Persoane cu acces</h3>
       <div class="share-owner-row">
-        <span class="share-avatar">${(auth.currentUser.email || '?')[0].toUpperCase()}</span>
-        <div>${auth.currentUser.email} (tu)</div>
+        <span class="share-avatar">${(auth.currentUser?.email || '?')[0].toUpperCase()}</span>
+        <div>${escapeHTML(auth.currentUser?.email || '')} (tu)</div>
         <span class="share-role-label">Owner</span>
       </div>
       <h4>Acces general</h4>
@@ -272,14 +283,14 @@ async function openAppSettings(panel) {
 
   const groupRowsHtml = myGroups.map(g => `
     <div class="app-settings-group-row">
-      <span class="group-swatch" style="background:${g.color}"></span>
-      <span>${g.name}</span>
-      <span class="group-role">${g.role}</span>
+      <span class="group-swatch" style="background:${escapeHTML(g.color)}"></span>
+      <span>${escapeHTML(g.name)}</span>
+      <span class="group-role">${escapeHTML(g.role)}</span>
       <div class="app-settings-group-actions">
         ${g.role === 'owner'
-          ? `<button class="asga-color" data-id="${g.id}" data-color="${g.color}" title="Schimbă culoarea">🎨</button>
-             <button class="asga-delete" data-id="${g.id}" title="Șterge grupul">🗑</button>`
-          : `<button class="asga-leave" data-id="${g.id}" title="Ieși din grup">↩ Ieși</button>`
+          ? `<button class="asga-color" data-id="${escapeHTML(g.id)}" data-color="${escapeHTML(g.color)}" title="Schimbă culoarea">🎨</button>
+             <button class="asga-delete" data-id="${escapeHTML(g.id)}" title="Șterge grupul">🗑</button>`
+          : `<button class="asga-leave" data-id="${escapeHTML(g.id)}" title="Ieși din grup">↩ Ieși</button>`
         }
       </div>
     </div>
