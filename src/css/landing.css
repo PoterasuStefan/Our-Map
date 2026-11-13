@@ -268,9 +268,9 @@ body {
   background-image: linear-gradient(rgba(15, 23, 42, 0.15), rgba(15, 23, 42, 0.15)),
     url('../images/zakynthos-map.jpg');
   background-size: cover;
-  background-position: center;
+  background-position: center 62%;
   border-radius: 12px;
-  padding: 24px 20px 32px;
+  padding: 24px 20px 36px;
 }
 
 .mockup-topbar {
@@ -583,7 +583,8 @@ body.view-landing .map-login-hint {
   .hero-benefits,
   .section-subtitle,
   .mockup-url,
-  .mockup-pill-exif {
+  .mockup-pill-exif,
+  .pin-demo-secondary {
     display: none;
   }
 
@@ -624,7 +625,13 @@ body.view-landing .map-login-hint {
   }
 
   .mockup-map-area {
-    padding: 14px;
+    padding: 16px 14px 28px;
+    background-position: 42% 62%;
+  }
+
+  .pin-demo {
+    max-width: 340px;
+    margin: 0 auto;
   }
 
   .footer-inner {
