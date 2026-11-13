@@ -2,36 +2,314 @@
 <html lang="ro">
   <head>
     <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-Content-Type-Options" content="nosniff" />
     <meta name="referrer" content="strict-origin-when-cross-origin" />
-    
-    <!-- Content Security Policy (CSP) -->
-    <meta http-equiv="Content-Security-Policy" content="
-      default-src 'self';
-      script-src 'self' 'unsafe-inline' https://unpkg.com;
-      style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://unpkg.com;
-      font-src 'self' https://fonts.gstatic.com data:;
-      img-src 'self' data: blob: https://*.tile.openstreetmap.org https://tile.openstreetmap.org https://images.unsplash.com https://res.cloudinary.com;
-      connect-src 'self' https://api.cloudinary.com https://*.googleapis.com https://*.firebaseio.com https://identitytoolkit.googleapis.com https://securetoken.googleapis.com ws: wss: http://localhost:* http://127.0.0.1:*;
-      frame-src 'none';
-      object-src 'none';
-      base-uri 'self';
-    " />
 
-    <link rel="icon" type="image/svg+xml" href="/logo.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- Content Security Policy (CSP) pentru protecția aplicației -->
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="
+        default-src 'self';
+        script-src 'self' 'unsafe-inline' https://unpkg.com;
+        style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://unpkg.com;
+        font-src 'self' https://fonts.gstatic.com data:;
+        img-src 'self' data: blob: https://*.tile.openstreetmap.org https://tile.openstreetmap.org https://images.unsplash.com https://res.cloudinary.com;
+        connect-src 'self' https://api.cloudinary.com https://*.googleapis.com https://*.firebaseio.com https://identitytoolkit.googleapis.com https://securetoken.googleapis.com ws: wss: http://localhost:* http://127.0.0.1:*;
+        frame-src 'none';
+        object-src 'none';
+        base-uri 'self';
+      "
+    />
+
     <title>Our-Map — Harta Amintirilor și Călătoriilor Tale</title>
-    <meta name="description" content="Harta voastră interactivă: salvează amintiri, călătorii și locuri speciale alături de prieteni sau perechea ta." />
-    <meta name="theme-color" content="#0b0f19" />
+    <meta
+      name="description"
+      content="Harta voastră interactivă: salvează amintiri, călătorii și locuri speciale alături de prieteni sau perechea ta."
+    />
+    <meta name="theme-color" content="#0f172a" />
+    <link rel="icon" type="image/svg+xml" href="/logo.svg" />
 
-    <!-- Google Font Plus Jakarta Sans -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Font Google: Plus Jakarta Sans -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
 
+    <!-- Stiluri pentru harta Leaflet și pentru pagina de prezentare (Landing Page) -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="stylesheet" href="/src/css/landing.css" />
   </head>
+
   <body class="view-landing">
+    <!-- ================================================================
+         PAGINA DE PREZENTARE (LANDING PAGE) — HTML & CSS nativ
+         ================================================================ -->
+    <div id="landing-page">
+      <!-- BARA DE NAVIGAȚIE (Header sticky cu logo, linkuri și butoane) -->
+      <header class="navbar">
+        <div class="container">
+          <div class="navbar-inner">
+            <!-- Logo și titlul aplicației -->
+            <a href="#" class="brand" id="brand-logo-btn">
+              <img src="/logo.svg" alt="Our-Map Logo" class="brand-logo" width="38" height="38" />
+              <span class="brand-name">Our-Map</span>
+            </a>
+
+            <!-- Linkuri de navigare internă către secțiunile paginii -->
+            <nav class="nav-links" aria-label="Navigație principală">
+              <a href="#features" class="nav-link">Funcționalități</a>
+              <a href="#how-it-works" class="nav-link">Cum funcționează</a>
+              <a href="#about" class="nav-link">Despre aplicație</a>
+            </nav>
+
+            <!-- Butoane de acțiune (actualizate dinamic la autentificare) -->
+            <div class="nav-actions" id="landing-nav-auth-actions">
+              <button type="button" class="btn btn-secondary" id="nav-login-btn">
+                Autentificare
+              </button>
+              <button type="button" class="btn btn-primary" id="nav-open-map-btn">
+                Deschide Harta
+              </button>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <!-- CONȚINUTUL PRINCIPAL AL PAGINII -->
+      <main>
+        <!-- SECȚIUNEA 1: HERO (Titlu principal, butoane CTA și previzualizare hartă) -->
+        <section class="hero">
+          <div class="container">
+            <div class="hero-badge">Harta amintirilor și călătoriilor voastre</div>
+
+            <h1 class="hero-title">
+              Toate călătoriile tale.<br />
+              <span class="hero-highlight">O singură hartă cu amintiri.</span>
+            </h1>
+
+            <p class="hero-subtitle">
+              Marchează destinațiile preferate, încarcă poze de vacanță cu localizare automată
+              și creează grupuri private cu partenerul sau prietenii.
+            </p>
+
+            <!-- Butoane principale de acțiune -->
+            <div class="hero-actions">
+              <button type="button" class="btn btn-primary btn-lg" id="hero-open-map-btn">
+                📍 Deschide Harta Interactivă
+              </button>
+              <button type="button" class="btn btn-secondary btn-lg" id="hero-auth-btn">
+                Creează Cont Gratuit
+              </button>
+            </div>
+
+            <!-- Lista scurtă de beneficii -->
+            <div class="hero-benefits">
+              <div><span class="benefit-check">✓</span> Pinuri nelimitate</div>
+              <div><span class="benefit-check">✓</span> Grupuri private pe cod</div>
+              <div><span class="benefit-check">✓</span> GPS extras direct din poze</div>
+              <div><span class="benefit-check">✓</span> 100% Gratuit</div>
+            </div>
+
+            <!-- Previzualizare demo a hărții (layout curat cu Grid, fără suprapuneri pe mobil) -->
+            <div class="mockup-card">
+              <div class="mockup-header">
+                <span class="dot dot-red"></span>
+                <span class="dot dot-yellow"></span>
+                <span class="dot dot-green"></span>
+                <span class="mockup-url">our-map.app/map</span>
+              </div>
+
+              <div class="mockup-map-area">
+                <!-- Bara superioară cu informații demo -->
+                <div class="mockup-topbar">
+                  <span class="mockup-pill">🏖️ Vacanță Zakynthos (4 membri)</span>
+                  <span class="mockup-pill mockup-pill-exif">📸 GPS extras automat din poză</span>
+                </div>
+
+                <!-- Cele 2 pinuri de exemplu așezate în CSS Grid -->
+                <div class="mockup-pins-grid">
+                  <!-- Pin demo 1 -->
+                  <div class="pin-demo">
+                    <div class="pin-card">
+                      <div class="pin-card-header">
+                        <span>📍 Plaja Navagio</span>
+                        <span>★ Amintire</span>
+                      </div>
+                      <div class="pin-card-body">
+                        <img
+                          src="https://images.unsplash.com/photo-1570077188670-e3a8d69ac5ff?auto=format&fit=crop&w=400&q=80"
+                          alt="Plaja Navagio"
+                          class="pin-card-img"
+                        />
+                        <p>Cea mai frumoasă apă pe care am văzut-o vreodată! ❤️</p>
+                      </div>
+                    </div>
+                    <img src="/logo.svg" alt="Pin marker" class="pin-card-marker" />
+                  </div>
+
+                  <!-- Pin demo 2 -->
+                  <div class="pin-demo">
+                    <div class="pin-card">
+                      <div class="pin-card-header">
+                        <span>📍 Blue Caves &amp; Keri</span>
+                        <span>★ Amintire</span>
+                      </div>
+                      <div class="pin-card-body">
+                        <img
+                          src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=400&q=80"
+                          alt="Blue Caves & Keri"
+                          class="pin-card-img"
+                        />
+                        <p>Apus magnific și ape turcoaz cristaline! 🌅</p>
+                      </div>
+                    </div>
+                    <img src="/logo.svg" alt="Pin marker" class="pin-card-marker" />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- SECȚIUNEA 2: FUNCȚIONALITĂȚI PRINCIPALE (Grid 2x2) -->
+        <section class="section section-alt" id="features">
+          <div class="container">
+            <div class="section-header">
+              <div class="section-label">Funcționalități</div>
+              <h2 class="section-title">Construit special pentru amintirile voastre</h2>
+              <p class="section-subtitle">
+                Tot ce ai nevoie pentru a ține minte fiecare loc explorat, într-un format
+                vizual prietenos și intuitiv.
+              </p>
+            </div>
+
+            <div class="features-grid">
+              <article class="feature-card">
+                <div class="feature-icon">📍</div>
+                <h3 class="feature-title">Pinuri Personalizate</h3>
+                <p class="feature-desc">
+                  Alege culori tematice, titluri și note detaliate pentru fiecare punct de pe
+                  hartă (cafenele, plaje, cazări sau obiective turistice).
+                </p>
+              </article>
+
+              <article class="feature-card">
+                <div class="feature-icon">📸</div>
+                <h3 class="feature-title">Localizare Automată din Poze</h3>
+                <p class="feature-desc">
+                  Încarcă fotografiile direct de pe telefon sau PC! Aplicația extrage
+                  coordonatele GPS din metadatele EXIF și plasează pinul instant pe hartă.
+                </p>
+              </article>
+
+              <article class="feature-card">
+                <div class="feature-icon">👥</div>
+                <h3 class="feature-title">Grupuri &amp; Colaborare</h3>
+                <p class="feature-desc">
+                  Creează spații comune pentru familie, cuplu sau gașca de prieteni.
+                  Invită-i printr-un simplu cod unic sau link generat automat.
+                </p>
+              </article>
+
+              <article class="feature-card">
+                <div class="feature-icon">🔒</div>
+                <h3 class="feature-title">Spațiu Privat &amp; Curat</h3>
+                <p class="feature-desc">
+                  Fără reclame enervante și fără feed-uri algoritmice. Harta voastră rămâne
+                  strict a voastră, accesibilă oricând din browser.
+                </p>
+              </article>
+            </div>
+          </div>
+        </section>
+
+        <!-- SECȚIUNEA 3: CUM FUNCȚIONEAZĂ (Grid 3 coloane) -->
+        <section class="section" id="how-it-works">
+          <div class="container">
+            <div class="section-header">
+              <div class="section-label">Ghid Rapid</div>
+              <h2 class="section-title">Cum funcționează Our-Map?</h2>
+              <p class="section-subtitle">
+                Doar 3 pași simpli pentru a începe să-ți creezi atlasul călătoriilor.
+              </p>
+            </div>
+
+            <div class="steps-grid">
+              <article class="step-card">
+                <span class="step-badge">Pasul 1</span>
+                <h3 class="step-title">Creează sau alătură-te unui grup</h3>
+                <p class="step-desc">
+                  Deschide harta și fă-ți propriul grup sau introdu codul de invitație
+                  primit de la un prieten.
+                </p>
+              </article>
+
+              <article class="step-card">
+                <span class="step-badge">Pasul 2</span>
+                <h3 class="step-title">Adaugă locuri și fotografii</h3>
+                <p class="step-desc">
+                  Folosește butonul rapid „+” sau dă click direct pe hartă pentru a salva o
+                  locație cu fotografii și notițe de suflet.
+                </p>
+              </article>
+
+              <article class="step-card">
+                <span class="step-badge">Pasul 3</span>
+                <h3 class="step-title">Retrăiește fiecare aventură</h3>
+                <p class="step-desc">
+                  Navighează pe glob, dă zoom pe orașele vizitate și derulează caruselul de
+                  poze oricând vrei să simți atmosfera vacanțelor.
+                </p>
+              </article>
+            </div>
+          </div>
+        </section>
+
+        <!-- SECȚIUNEA 4: BANNER FINAL (CTA) -->
+        <section class="section section-alt" id="about">
+          <div class="container">
+            <div class="cta-box">
+              <h2 class="cta-title">
+                Ești pregătit să începi să-ți cartografiezi călătoriile?
+              </h2>
+              <p class="cta-desc">
+                Alătură-te acum și creează prima ta hartă de vacanță în mai puțin de un minut.
+              </p>
+              <button type="button" class="btn btn-primary btn-lg" id="bottom-open-map-btn">
+                🚀 Deschide Harta Acum
+              </button>
+            </div>
+          </div>
+        </section>
+      </main>
+
+      <!-- SUBSOLUL PAGINII (FOOTER) -->
+      <footer class="footer">
+        <div class="container">
+          <div class="footer-inner">
+            <div class="footer-brand">
+              <img src="/logo.svg" alt="Our-Map" width="24" height="24" />
+              <span>Our-Map</span>
+            </div>
+
+            <div class="footer-links">
+              <a href="#features">Funcționalități</a>
+              <a href="#how-it-works">Ghid</a>
+              <a href="https://github.com/PoterasuStefan/Our-Map" target="_blank" rel="noopener noreferrer">
+                GitHub
+              </a>
+            </div>
+
+            <div>&copy; 2026 Our-Map. Făcut pentru călătorii și amintiri.</div>
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <!-- Containerul pentru harta interactivă Leaflet (gestionat de src/main.js) -->
     <div id="app"></div>
     <script type="module" src="/src/main.js"></script>
   </body>

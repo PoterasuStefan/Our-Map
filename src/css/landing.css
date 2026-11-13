@@ -1,0 +1,643 @@
+/* ==========================================================================
+   LANDING.CSS — Stiluri simplificate pentru pagina de prezentare Our-Map
+   Folosește doar CSS nativ: variabile, Flexbox, CSS Grid și Media Queries.
+   ========================================================================== */
+
+/* 1. VARIABILE GLOBALE (Paleta de culori și fontul principal) */
+:root {
+  --bg-main: #0f172a;        /* Fundal principal albastru închis */
+  --bg-secondary: #162033;   /* Fundal ușor diferențiat pentru secțiuni */
+  --bg-card: #1e293b;        /* Fundal pentru carduri și cutii */
+  --border-color: #334155;   /* Culoare bordură subtilă */
+  --accent: #e11d48;         /* Roz-coral principal pentru butoane și accente */
+  --accent-hover: #be123c;   /* Roz-coral mai închis la trecerea cu mouse-ul */
+  --accent-light: #fda4af;   /* Roz deschis pentru etichete și titluri secundare */
+  --text-main: #f8fafc;      /* Text principal alb (contrast mare) */
+  --text-muted: #cbd5e1;     /* Text secundar gri deschis */
+  --font-main: 'Plus Jakarta Sans', Arial, sans-serif;
+}
+
+/* 2. SETĂRI DE BAZĂ ȘI CONTAINER */
+body {
+  margin: 0;
+}
+
+#landing-page {
+  font-family: var(--font-main);
+  background-color: var(--bg-main);
+  color: var(--text-main);
+  min-height: 100vh;
+  width: 100%;
+  line-height: 1.6;
+  overflow-x: hidden; /* Previne scroll-ul orizontal nedorit pe telefon */
+}
+
+/* Aplicăm box-sizing pe toate elementele din landing pentru calcule corecte de lățime */
+#landing-page * {
+  box-sizing: border-box;
+}
+
+/* Container central care limitează lățimea conținutului pe ecrane mari */
+.container {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+/* 3. BUTOANE REUTILIZABILE (Principiul de Repetiție & Consistență) */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 20px;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  border: 1px solid transparent;
+  text-decoration: none;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.btn-primary {
+  background-color: var(--accent);
+  color: #ffffff;
+}
+
+.btn-primary:hover {
+  background-color: var(--accent-hover);
+}
+
+.btn-secondary {
+  background-color: var(--bg-card);
+  color: var(--text-main);
+  border-color: var(--border-color);
+}
+
+.btn-secondary:hover {
+  background-color: #293548;
+  border-color: #475569;
+}
+
+.btn-lg {
+  padding: 14px 26px;
+  font-size: 16px;
+}
+
+.btn-sm {
+  padding: 8px 14px;
+  font-size: 13px;
+}
+
+/* 4. BARA DE NAVIGAȚIE (NAVBAR) */
+.navbar {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background-color: #0f172a;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.navbar-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding: 14px 0;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  color: var(--text-main);
+  cursor: pointer;
+}
+
+.brand-logo {
+  width: 38px;
+  height: 38px;
+  display: block;
+}
+
+.brand-name {
+  font-size: 20px;
+  font-weight: 800;
+  color: var(--text-main);
+}
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+
+.nav-link {
+  color: var(--text-muted);
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.nav-link:hover {
+  color: var(--accent-light);
+}
+
+.nav-actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.nav-user-text {
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+.nav-user-text strong {
+  color: var(--text-main);
+}
+
+/* 5. SECȚIUNEA HERO (Primul ecran de prezentare) */
+.hero {
+  padding: 64px 0;
+  text-align: center;
+}
+
+.hero-badge {
+  display: inline-block;
+  padding: 6px 14px;
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--accent-light);
+  margin-bottom: 20px;
+}
+
+.hero-title {
+  font-size: 46px;
+  font-weight: 800;
+  line-height: 1.2;
+  margin: 0 auto 18px;
+  max-width: 800px;
+}
+
+.hero-highlight {
+  color: var(--accent-light);
+}
+
+.hero-subtitle {
+  font-size: 18px;
+  color: var(--text-muted);
+  max-width: 640px;
+  margin: 0 auto 30px;
+}
+
+.hero-actions {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 14px;
+  margin-bottom: 28px;
+}
+
+.hero-benefits {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 20px;
+  margin-bottom: 44px;
+  font-size: 14px;
+  color: var(--text-muted);
+}
+
+.benefit-check {
+  color: #4ade80;
+  font-weight: 700;
+  margin-right: 4px;
+}
+
+/* 6. PREVIZUALIZARE HARTĂ (MOCKUP DEMO — fără elemente suprapuse) */
+.mockup-card {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 16px;
+  padding: 16px;
+  text-align: left;
+}
+
+.mockup-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding-bottom: 12px;
+  margin-bottom: 14px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.dot-red { background-color: #ef4444; }
+.dot-yellow { background-color: #f59e0b; }
+.dot-green { background-color: #10b981; }
+
+.mockup-url {
+  margin-left: auto;
+  font-size: 12px;
+  color: var(--text-muted);
+  background-color: var(--bg-main);
+  padding: 4px 12px;
+  border-radius: 14px;
+}
+
+/* Zona hărții folosește Flexbox/Grid normal pentru ca elementele să nu se suprapună */
+.mockup-map-area {
+  background-color: #132238;
+  background-image: linear-gradient(rgba(15, 23, 42, 0.55), rgba(15, 23, 42, 0.55)),
+    url('https://tile.openstreetmap.org/10/571/395.png');
+  background-size: cover;
+  background-position: center;
+  border-radius: 12px;
+  padding: 20px;
+}
+
+.mockup-topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 24px;
+}
+
+.mockup-pill {
+  background-color: #0f172a;
+  border: 1px solid var(--border-color);
+  color: var(--text-main);
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.mockup-pill-exif {
+  border-color: #22c55e;
+  color: #86efac;
+}
+
+/* Grid cu 2 coloane pe desktop, 1 coloană pe telefon */
+.mockup-pins-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+  max-width: 620px;
+  margin: 0 auto;
+}
+
+.pin-demo {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.pin-card {
+  width: 100%;
+  background-color: #fdf1e7;
+  color: #1e293b;
+  border: 2px solid #f472b6;
+  border-radius: 12px;
+  overflow: hidden;
+  font-size: 13px;
+}
+
+.pin-card-header {
+  background-color: #fbcfe8;
+  color: #831843;
+  padding: 6px 10px;
+  font-weight: 700;
+  font-size: 12px;
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.pin-card-body {
+  padding: 10px;
+}
+
+.pin-card-img {
+  width: 100%;
+  height: 110px;
+  object-fit: cover;
+  border-radius: 8px;
+  display: block;
+  margin-bottom: 8px;
+}
+
+.pin-card-body p {
+  margin: 0;
+}
+
+.pin-card-marker {
+  width: 30px;
+  height: 30px;
+  margin-top: 8px;
+}
+
+/* 7. SECȚIUNI GENERALE (Funcționalități & Cum funcționează) */
+.section {
+  padding: 72px 0;
+}
+
+.section-alt {
+  background-color: var(--bg-secondary);
+  border-top: 1px solid var(--border-color);
+  border-bottom: 1px solid var(--border-color);
+}
+
+.section-header {
+  text-align: center;
+  max-width: 640px;
+  margin: 0 auto 44px;
+}
+
+.section-label {
+  color: var(--accent-light);
+  font-size: 13px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 8px;
+}
+
+.section-title {
+  font-size: 34px;
+  font-weight: 800;
+  margin: 0 0 12px;
+}
+
+.section-subtitle {
+  color: var(--text-muted);
+  font-size: 16px;
+  margin: 0;
+}
+
+/* Grid 2x2 pentru cele 4 funcționalități */
+.features-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 24px;
+}
+
+.feature-card {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 14px;
+  padding: 26px;
+}
+
+.feature-icon {
+  width: 46px;
+  height: 46px;
+  background-color: var(--bg-main);
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  margin-bottom: 16px;
+}
+
+.feature-title {
+  font-size: 19px;
+  font-weight: 700;
+  margin: 0 0 8px;
+}
+
+.feature-desc {
+  color: var(--text-muted);
+  font-size: 14px;
+  margin: 0;
+}
+
+/* Grid 3 coloane pentru cei 3 pași */
+.steps-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+}
+
+.step-card {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 14px;
+  padding: 26px;
+}
+
+.step-badge {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 14px;
+  font-size: 12px;
+  font-weight: 700;
+  background-color: var(--accent);
+  color: #ffffff;
+  margin-bottom: 14px;
+}
+
+.step-title {
+  font-size: 18px;
+  font-weight: 700;
+  margin: 0 0 8px;
+}
+
+.step-desc {
+  color: var(--text-muted);
+  font-size: 14px;
+  margin: 0;
+}
+
+/* 8. BANNER FINAL (CTA) ȘI FOOTER */
+.cta-box {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 16px;
+  padding: 48px 28px;
+  text-align: center;
+}
+
+.cta-title {
+  font-size: 30px;
+  font-weight: 800;
+  margin: 0 0 12px;
+}
+
+.cta-desc {
+  color: var(--text-muted);
+  font-size: 16px;
+  max-width: 560px;
+  margin: 0 auto 24px;
+}
+
+.footer {
+  border-top: 1px solid var(--border-color);
+  padding: 32px 0;
+  color: var(--text-muted);
+  font-size: 14px;
+}
+
+.footer-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.footer-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 700;
+  color: var(--text-main);
+}
+
+.footer-brand img {
+  width: 24px;
+  height: 24px;
+}
+
+.footer-links {
+  display: flex;
+  gap: 18px;
+  flex-wrap: wrap;
+}
+
+.footer-links a {
+  color: var(--text-muted);
+  text-decoration: none;
+}
+
+.footer-links a:hover {
+  color: var(--accent-light);
+}
+
+/* 9. COMUTARE ÎNTRE LANDING PAGE ȘI HARTA INTERACTIVĂ */
+body.view-map #landing-page {
+  display: none;
+}
+
+body.view-landing #map,
+body.view-landing .menu-btn,
+body.view-landing .quickadd-btn,
+body.view-landing .quickadd-panel,
+body.view-landing .quickadd-toast,
+body.view-landing .map-home-btn,
+body.view-landing .map-login-hint {
+  display: none !important;
+}
+
+/* Butonul "Acasă" de pe pagina cu harta interactivă */
+.map-home-btn {
+  position: fixed;
+  top: 14px;
+  left: 60px;
+  z-index: 1000;
+  background-color: #ffffff;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  padding: 8px 14px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #1e293b;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-main);
+}
+
+.map-home-btn:hover {
+  background-color: #f8fafc;
+  color: var(--accent);
+}
+
+/* 10. RESPONSIVE DESIGN — MEDIA QUERIES PENTRU TABLETĂ ȘI TELEFON */
+@media (max-width: 768px) {
+  /* Ascundem link-urile secundare din navbar pe ecrane mici pentru un header aerisit */
+  .nav-links {
+    display: none;
+  }
+
+  .hero {
+    padding: 40px 0;
+  }
+
+  .hero-title {
+    font-size: 30px;
+  }
+
+  .hero-subtitle {
+    font-size: 16px;
+  }
+
+  .section {
+    padding: 48px 0;
+  }
+
+  .section-title {
+    font-size: 26px;
+  }
+
+  .cta-title {
+    font-size: 24px;
+  }
+
+  /* Toate grid-urile trec la 1 singură coloană pe mobil */
+  .mockup-pins-grid,
+  .features-grid,
+  .steps-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .mockup-map-area {
+    padding: 14px;
+  }
+
+  .footer-inner {
+    flex-direction: column;
+    text-align: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .navbar-inner {
+    justify-content: center;
+  }
+
+  .nav-actions {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .hero-actions .btn {
+    width: 100%;
+  }
+
+  .cta-box {
+    padding: 32px 18px;
+  }
+}

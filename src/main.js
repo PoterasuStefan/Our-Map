@@ -1,5 +1,4 @@
-import './style.css';
-import './landing.css';
+import './css/map.css';
 import { initLandingPage } from './landing.js';
 import { initMap } from './map.js';
 import { initSidepanel } from './sidepanel.js';
