@@ -14,8 +14,9 @@ Acest document este sursa unică de adevăr pentru dezvoltarea proiectului **Our
 - [ ] **Remediere Prompt Login Persistent (`.map-login-hint`):**
   - Ascundere forțată a elementului `.map-login-hint` când utilizatorul revine pe landing page (`body.view-landing`).
   - Curățare sau apel de demontare a mesajului la revenirea pe vizualizarea principală.
-- [ ] **Înfrumusețare Subtilă a Hărții (Fără Bloat):**
-  - Bara plutitoare de control (*Acasă*, *Meniu*) unificată cu efect subtil de glassmorphism (`backdrop-filter: blur(10px)`).
+- [ ] **Înfrumusețare Pagina cu Harta — Design „Smart & Friendly” (Fără Bloat):**
+  - Bara plutitoare de control (*Acasă*, *Meniu*, *Quick Add +*) unificată și rafinată cu efect subtil de glassmorphism (`backdrop-filter: blur(12px)`), colțuri rotunjite armonios și controale Leaflet de zoom/atribuire restilizate modern.
+  - Design „smart & friendly” pentru modale (`.settings-modal`, `.quickadd-modal`, `.modal`), panoul lateral (`.sidepanel`) și popup-urile pinurilor: tipografie coerentă (`Plus Jakarta Sans`), input-uri cu focus ring curat, butoane în paletă caldă coral/crem cu micro-interacțiuni și tranziții fluide, plus stare de bun-venit prietenoasă (`.map-hint-box` cu buton direct de autentificare).
   - Rafinare vizuală a pinurilor și umbrelor în Leaflet fără adăugarea de pachete npm grele.
 
 ### 🚀 Sprint 2: Performanță & Colaborare (Următorul Ciclu)
